@@ -1,0 +1,8 @@
+POST http://localhost:3000/turnos
+Content-Type: application/json
+
+{
+    "fecha": "22/10/2024",
+    "hora":  "10:00:00",
+    "idUsuario": 1
+} 
