@@ -13,6 +13,9 @@ async function insertToSupabase(table, values) {
         .insert(values);
     return error;
 }
+app.get("/", async (req,res) =>{
+    res.send("hola vercel");
+})
 app.post("/turnos", async (req, res) =>{
     const body = req.body;
     const fecha = body.fecha;
