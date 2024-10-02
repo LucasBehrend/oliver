@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
-import { express } from express;
+import express from 'express';
 const supabaseUrl = 'https://rujclvrxksqnijyqcwgz.supabase.co';
-const supabaseKey = process.env.SUPABASE_KEY;
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ1amNsdnJ4a3NxbmlqeXFjd2d6Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTcyNzgyNjk3MCwiZXhwIjoyMDQzNDAyOTcwfQ.-MBORoWRddYlYuyIbFJKjFFJv2aN8AaHXfiDMsoPCKg";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const app = express();
@@ -40,3 +40,7 @@ app.get("/turnos", async (req,res) =>{
     }
     res.send(data);
 })
+
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
