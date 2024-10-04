@@ -1,8 +1,31 @@
 POST http://localhost:3000/turnos
 Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzI4MDAzMjM3LCJleHAiOjE3MjgwMDY4Mzd9.0UUn8P-gxpuWh-_lq1ppn-s-zI2YUBGloQvAcB1h0pg
 
 {
-    "fecha": "22/10/2024",
-    "hora":  "10:00:00",
-    "idUsuario": 1
+    "fecha": "12/11/2024",
+    "hora":  "12:00:00",
+    "motivo": "xdsasdasddas",
+    "descripcion": "ghghfghf"
 } 
+
+###
+GET http://localhost:3000/turnos
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzI4MDAzMjM3LCJleHAiOjE3MjgwMDY4Mzd9.0UUn8P-gxpuWh-_lq1ppn-s-zI2YUBGloQvAcB1h0pg
+
+###
+POST http://localhost:3000/signup
+Content-Type: application/json
+
+{
+    "nombre": "LUCAS",
+    "password": "1234"
+}
+###
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+    "nombre": "LUCAS",
+    "password": "1234"
+}
