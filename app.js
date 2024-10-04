@@ -36,6 +36,13 @@ async function insertToSupabase(table, values) {
         .insert(values);
     return error;
 }
+async function updateToSupabase(table, values, id) {
+    const error = await supabase
+        .from(table)
+        .update(values)
+        .eq("id_usuario", id);
+    return error;
+}
 app.get("/", async (req,res) =>{
     res.send("hola vercel");
 })
@@ -100,14 +107,25 @@ app.post("/login",  async (req,res) =>{
 app.post('/signup', async (req,res)=> {
     const body = req.body;
     const password = await bcrypt.hash(body.password, 10);
-    const error_insert = await insertToSupabase("usuarios", {
-        usuario: body.nombre,
+    
+    const error_insert_usuarios = await insertToSupabase("usuarios", {
+        usuario: body.mail,
         password: password,
         admin: false
     })
-    if (error_insert.error) {
-        return res.status(500).send('Error posting data: '+ error_insert);
+    console.log(error_insert_usuarios);
+    // const error_update_perfiles = await updateToSupabase("perfiles",{
+    //     nombre: body.nombre,
+    //     apellido: body.apellido,
+    //     edad: body.edad,
+    // })
+    if (error_insert_usuarios.error) {
+        return res.status(500).send('Error posting data: '+ error_insert_usuarios);
     }
+    // else if (error_update_perfiles.error) {
+    //     console.log(error_update_perfiles);
+    //     return res.status(500).send('Error posting data: '+ error_update_perfiles.error);
+    // }
     else {
         return res.send(`User created successfully.`);
     }
