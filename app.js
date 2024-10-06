@@ -153,7 +153,7 @@ app.post('/signup', async (req,res)=> {
     //     return res.status(500).send('Error posting data: '+ error_update_perfiles.error);
     // }
     else {
-        return res.send(`User created successfully.`);
+        return res.json({message:`User created successfully.` });
     }
 })
 app.post("/perfil", authenticateToken, async (req,res) => {
