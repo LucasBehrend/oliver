@@ -10,6 +10,7 @@ dotenv.config();
 const supabaseUrl = 'https://rujclvrxksqnijyqcwgz.supabase.co';
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
+const app = express();
 app.use(cors({
     origin: "*",
     methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS', 'HEAD'],
@@ -17,7 +18,6 @@ app.use(cors({
     allowedHeaders: '*'
 }));
 app.set("trust proxy", 1);
-const app = express();
 const port = 3000;
 
 app.use(express.json());
