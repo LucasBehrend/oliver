@@ -68,7 +68,8 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
         hora: hora,
         id_usuario: req.id.id,
         motivo: motivo,
-        descripcion: descripcion
+        descripcion: descripcion,
+        aceptado: false
     });
     if (insert_error.error) {
         console.log("log", insert_error);
@@ -87,6 +88,28 @@ app.get("/turnos", authenticateToken, async (req,res) =>{
     console.log(data);
     console.log((data.filter(data => data.id === req.id.id)));
     res.send(data.filter(data => data.id_usuario === req.id.id));
+})
+app.get("/fecha_turnos", async (req,res) => {
+    const { data, error } = await supabase
+        .from('turnos')
+        .select("fecha, hora");
+    if (error) {
+        console.error('Error fetching data:', error.message);
+        return res.status(500).send('Error fetching data');
+    }
+    res.json({"data": data});
+        
+})
+app.get("/todos_turnos", async (req,res) => {
+    const { data, error } = await supabase
+        .from('turnos')
+        .select();
+    if (error) {
+        console.error('Error fetching data:', error.message);
+        return res.status(500).send('Error fetching data');
+    }
+    res.json({"data": data});
+        
 })
 
 app.post("/login",  async (req,res) =>{
