@@ -137,6 +137,9 @@ app.post('/signup', async (req,res)=> {
     const id = data[0].id;
     const error_insert_usuarios = await insertToSupabase("perfiles",{
         id_usuario: id,
+        nombre: body.nombre,
+        apellido: body.apellido,
+        edad: body.edad
     })
     // const error_update_perfiles = await updateToSupabase("perfiles",{
     //     nombre: body.nombre,
@@ -164,11 +167,13 @@ app.post('/signup', async (req,res)=> {
     
 app.post("/perfil", authenticateToken, async (req,res) => {
     const body = req.body;
+    const edad = body.lalala;
+
     const error_update_perfiles = await updateToSupabase("perfiles",{
         nombre: body.nombre,
         apellido: body.apellido,
         edad: body.edad,
-    }, "id_usuario", data[0].id);
+    }, "id_usuario", req.id.id);
     if (error_update_perfiles.error) {
         console.log(error_update_perfiles);
         return res.status(500).send('Error posting data: '+ error_update_perfiles.error);
@@ -186,7 +191,7 @@ app.get("/perfil", authenticateToken, async (req,res) => {
     }
     console.log(data);
 
-    res.send(data);
+    res.send(data[0]);
 })
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}/`);
