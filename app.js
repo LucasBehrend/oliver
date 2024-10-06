@@ -22,17 +22,19 @@ const port = 3000;
 
 app.use(express.json());
 
-function authenticateToken (req, res, next) {
+async function authenticateToken (req, res, next) {
     //Bearer token
     console.log("sasa");
+    console.log(req.headers);
     const authHeader = req.headers['authorization'];
     console.log(authHeader);
     const token = authHeader && authHeader.split(' ')[1];
     console.log(token);
     // let token_limpio = token.slice(1, -1);
     // console.log(token_limpio);
-    if (token === null) return res.sendStatus(401);
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err,id) => {
+    if (!token) return res.sendStatus(401);
+    console.log("ojojo");
+    await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err,id) => {
         if (err) return res.status(403); //token expiration
         req.id = id;
         console.log("fin");
@@ -104,7 +106,7 @@ app.post("/login",  async (req,res) =>{
     let compared = await bcrypt.compareSync(password, data[0].password);
     if (compared){
         const id = data[0].id;
-        const accessToken = jwt.sign({id: id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
+        const accessToken = jwt.sign({id: id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '72h'});
         res.json({accessToken: accessToken});
     }
     else{
@@ -174,7 +176,17 @@ app.post("/perfil", authenticateToken, async (req,res) => {
     res.send("Perfil actualizado correctamente.");
 })
 app.get("/perfil", authenticateToken, async (req,res) => {
-    
+    const { data, error } = await supabase
+        .from('perfiles')
+        .select()
+        .eq("id_usuario", req.id.id);
+    if (error) {
+        console.error('Error fetching data:', error.message);
+        return res.status(500).send('Error fetching data');
+    }
+    console.log(data);
+
+    res.send(data);
 })
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}/`);
