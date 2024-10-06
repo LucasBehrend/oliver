@@ -168,12 +168,13 @@ app.post('/signup', async (req,res)=> {
 app.post("/perfil", authenticateToken, async (req,res) => {
     const body = req.body;
     const edad = body.lalala;
-
-    const error_update_perfiles = await updateToSupabase("perfiles",{
-        nombre: body.nombre,
-        apellido: body.apellido,
-        edad: body.edad,
-    }, "id_usuario", req.id.id);
+    let dict = {};
+    console.log(typeof(body));
+    Object.entries(body).forEach(campo => {
+        dict[campo[0]] = campo[1];
+    });
+    console.log(dict);
+    const error_update_perfiles = await updateToSupabase("perfiles", dict, "id_usuario", req.id.id);
     if (error_update_perfiles.error) {
         console.log(error_update_perfiles);
         return res.status(500).send('Error posting data: '+ error_update_perfiles.error);
