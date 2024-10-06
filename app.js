@@ -36,11 +36,11 @@ async function insertToSupabase(table, values) {
         .insert(values);
     return error;
 }
-async function updateToSupabase(table, values, id) {
+async function updateToSupabase(table, values, campo, id) {
     const error = await supabase
         .from(table)
         .update(values)
-        .eq("id_usuario", id);
+        .eq(campo, id);
     return error;
 }
 app.get("/", async (req,res) =>{
@@ -90,7 +90,8 @@ app.post("/login",  async (req,res) =>{
         .eq('usuario', body.nombre);
     console.log(data);
     if(!data[0]){
-        res.status(500).send('User not found');    }
+        res.status(500).send('User not found');
+    }
     let compared = await bcrypt.compareSync(password, data[0].password);
     if (compared){
         const id = data[0].id;
@@ -108,20 +109,36 @@ app.post('/signup', async (req,res)=> {
     const body = req.body;
     const password = await bcrypt.hash(body.password, 10);
     
-    const error_insert_usuarios = await insertToSupabase("usuarios", {
-        usuario: body.mail,
-        password: password,
-        admin: false
+    const { data, error } = await supabase
+        .from("usuarios")
+        .insert({
+            usuario: body.mail,
+            password: password,
+            admin: false
+        })
+        .select();
+    if (error){
+        res.status(500).send('Error inserting data');
+    }
+    if(!data[0]){
+        res.status(500).send('Error selecting data');
+    }
+    const error_insert_usuarios = await insertToSupabase("perfiles",{
+        id_usuario: data[0].id,
     })
-    console.log(error_insert_usuarios);
     // const error_update_perfiles = await updateToSupabase("perfiles",{
     //     nombre: body.nombre,
     //     apellido: body.apellido,
     //     edad: body.edad,
-    // })
+    // }, "id_usuario", data[0].id);
     if (error_insert_usuarios.error) {
-        return res.status(500).send('Error posting data: '+ error_insert_usuarios);
+       console.log(error_insert_usuarios);
+       return res.status(500).send('Error posting data: '+ error_insert_usuarios.error);
     }
+    // if (error_update_perfiles.error) {
+    //     console.log(error_update_perfiles);
+    //     return res.status(500).send('Error posting data: '+ error_update_perfiles.error);
+    // }
     // else if (error_update_perfiles.error) {
     //     console.log(error_update_perfiles);
     //     return res.status(500).send('Error posting data: '+ error_update_perfiles.error);
