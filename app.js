@@ -3,14 +3,23 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import cors from 'cors';
+
 
 dotenv.config();
 const supabaseUrl = 'https://rujclvrxksqnijyqcwgz.supabase.co';
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = createClient(supabaseUrl, supabaseKey);
-
+app.use(cors({
+    origin: "*",
+    methods: ['POST', 'PUT', 'GET', 'DELETE', 'OPTIONS', 'HEAD'],
+    credentials: true,
+    allowedHeaders: '*'
+}));
+app.set("trust proxy", 1);
 const app = express();
 const port = 3000;
+
 app.use(express.json());
 
 function authenticateToken (req, res, next) {
