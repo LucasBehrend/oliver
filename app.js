@@ -147,6 +147,22 @@ app.post('/signup', async (req,res)=> {
         return res.send(`User created successfully.`);
     }
 })
+app.post("/perfil", authenticateToken, async (req,res) => {
+    const body = req.body;
+    const error_update_perfiles = await updateToSupabase("perfiles",{
+        nombre: body.nombre,
+        apellido: body.apellido,
+        edad: body.edad,
+    }, "id_usuario", data[0].id);
+    if (error_update_perfiles.error) {
+        console.log(error_update_perfiles);
+        return res.status(500).send('Error posting data: '+ error_update_perfiles.error);
+    }
+    res.send("Perfil actualizado correctamente.");
+})
+app.get("/perfil", authenticateToken, async (req,res) => {
+    
+})
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}/`);
 });
