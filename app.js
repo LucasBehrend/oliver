@@ -132,8 +132,9 @@ app.post('/signup', async (req,res)=> {
     if(!data[0]){
         res.status(500).send('Error selecting data');
     }
+    const id = data[0].id;
     const error_insert_usuarios = await insertToSupabase("perfiles",{
-        id_usuario: data[0].id,
+        id_usuario: id,
     })
     // const error_update_perfiles = await updateToSupabase("perfiles",{
     //     nombre: body.nombre,
@@ -144,6 +145,7 @@ app.post('/signup', async (req,res)=> {
        console.log(error_insert_usuarios);
        return res.status(500).send('Error posting data: '+ error_insert_usuarios.error);
     }
+    
     // if (error_update_perfiles.error) {
     //     console.log(error_update_perfiles);
     //     return res.status(500).send('Error posting data: '+ error_update_perfiles.error);
@@ -153,9 +155,11 @@ app.post('/signup', async (req,res)=> {
     //     return res.status(500).send('Error posting data: '+ error_update_perfiles.error);
     // }
     else {
-        return res.json({message:`User created successfully.` });
+        const accessToken = jwt.sign({id: id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'});
+        return res.json({message:`User created successfully.`, accessToken: accessToken });
     }
 })
+    
 app.post("/perfil", authenticateToken, async (req,res) => {
     const body = req.body;
     const error_update_perfiles = await updateToSupabase("perfiles",{
