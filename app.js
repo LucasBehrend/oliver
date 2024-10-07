@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 import cors from 'cors';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
@@ -216,9 +216,9 @@ app.post('/signup', async (req,res)=> {
     }
 })
     
-app.post("/perfil", upload.single('foto'), authenticateToken, async (req,res) => {
+app.post("/perfil", upload.single('file'), authenticateToken, async (req,res) => {
     const body = req.body;
-    const foto = req.foto;
+    const foto = req.file;
     if (!foto) {
         return res.status(400).json({error:'No file uploaded.'});
     }
