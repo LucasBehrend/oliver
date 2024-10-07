@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import cors from 'cors';
+import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
 
 
 dotenv.config();
@@ -22,6 +24,11 @@ const port = 3000;
 
 app.use(express.json());
 
+const upload = multer({ 
+    storage: multer.memoryStorage(), // Usando memoryStorage para almacenar archivos en la memoria temporalmente
+    limits: { fileSize: 100 * 1024 * 1024},
+    json: true
+});
 async function authenticateToken (req, res, next) {
     //Bearer token
     console.log("sasa");
@@ -53,6 +60,27 @@ async function updateToSupabase(table, values, campo, id) {
         .update(values)
         .eq(campo, id);
     return error;
+}
+async function uploadFileToSupabase(bucketName, fileBuffer, fileName, contentType) {
+    try {
+        // Upload file
+        const { data, error } = await supabase.storage
+            .from(bucketName)
+            .upload(fileName, fileBuffer, {
+                cacheControl: '3600',
+                upsert: false,
+                contentType: contentType,
+            });
+        if (error) {
+            console.error('Error uploading file:', error);
+        }
+        // Return the public URL of the uploaded file
+        const publicURL = await supabase.storage.from(bucketName).createSignedUrl(fileName, 31536000000);
+        return publicURL.data.signedUrl;
+    } catch (error) {
+        console.error('Error uploading file to Supabase:', error);
+        return null;
+    }
 }
 app.get("/", async (req,res) =>{
     res.send("hola vercel");
@@ -188,13 +216,27 @@ app.post('/signup', async (req,res)=> {
     }
 })
     
-app.post("/perfil", authenticateToken, async (req,res) => {
+app.post("/perfil", upload.single('foto'), authenticateToken, async (req,res) => {
     const body = req.body;
-    const edad = body.lalala;
+    const foto = req.foto.buffer;
+    if (!foto) {
+        return res.status(400).json({error:'No file uploaded.'});
+    }
+    const bucketName = 'estudios_bucket';
+    const uniqueFileName = `${uuidv4()}-${file.originalname}`;
+    const publicURL = await uploadFileToSupabase(bucketName, file.buffer, uniqueFileName, file.mimetype);
+    if (!publicURL) {
+        return res.status(500).send('Error uploading file to Supabase.');
+    }
     let dict = {};
     console.log(typeof(body));
     Object.entries(body).forEach(campo => {
-        dict[campo[0]] = campo[1];
+        if (campo[0] == 'foto'){
+            dict[campo[0]] = publicURL;
+        }
+        else{
+            dict[campo[0]] = campo[1];
+        }
     });
     console.log(dict);
     const error_update_perfiles = await updateToSupabase("perfiles", dict, "id_usuario", req.id.id);
