@@ -222,6 +222,7 @@ app.post("/perfil", upload.single('file'), authenticateToken, async (req,res) =>
     const bucketName = 'fotos_perfil';
     let dict = {};
     if(foto){
+        console.log("ok");
         const uniqueFileName = `${uuidv4()}-${foto.originalname}`;
         const publicURL = await uploadFileToSupabase(bucketName, foto.buffer, uniqueFileName, foto.mimetype);
         console.log(publicURL);
