@@ -220,11 +220,13 @@ app.post("/perfil", upload.single('file'), authenticateToken, async (req,res) =>
     const body = req.body;
     const foto = req.file;
     const bucketName = 'fotos_perfil';
-    const uniqueFileName = `${uuidv4()}-${foto.originalname}`;
-    const publicURL = await uploadFileToSupabase(bucketName, foto.buffer, uniqueFileName, foto.mimetype);
-    console.log(publicURL);
-    if (!publicURL) {
-        return res.status(500).send('Error uploading file to Supabase.');
+    if(foto){
+        const uniqueFileName = `${uuidv4()}-${foto.originalname}`;
+        const publicURL = await uploadFileToSupabase(bucketName, foto.buffer, uniqueFileName, foto.mimetype);
+        console.log(publicURL);
+        if (!publicURL) {
+            return res.status(500).send('Error uploading file to Supabase.');
+        }
     }
     let dict = {};
     // console.log((req));
