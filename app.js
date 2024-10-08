@@ -219,9 +219,6 @@ app.post('/signup', async (req,res)=> {
 app.post("/perfil", upload.single('file'), authenticateToken, async (req,res) => {
     const body = req.body;
     const foto = req.file;
-    if (!foto) {
-        return res.status(400).json({error:'No file uploaded.'});
-    }
     const bucketName = 'fotos_perfil';
     const uniqueFileName = `${uuidv4()}-${foto.originalname}`;
     const publicURL = await uploadFileToSupabase(bucketName, foto.buffer, uniqueFileName, foto.mimetype);
