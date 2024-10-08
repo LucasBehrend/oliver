@@ -101,9 +101,9 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
     });
     if (insert_error.error) {
         console.log("log", insert_error);
-        return res.status(500).send('Error inserting data');
+        return res.status(500).json({message: 'Error inserting data'});
     }
-    res.send("turno creado exitosamente");
+    res.json({message: "turno creado exitosamente"});
 } )
 app.get("/turnos", authenticateToken, async (req,res) =>{
     const { data, error } = await supabase
@@ -161,10 +161,10 @@ app.post("/login",  async (req,res) =>{
         res.json({accessToken: accessToken});
     }
     else{
-        res.send("Password incorrect");
+        res.json({message: "Password incorrect"});
     }
     if (error) { 
-        res.status(500).send('Error inserting data');
+        res.status(500).json({message: 'Error inserting data'});
     }
 })
 app.post('/signup', async (req,res)=> {
@@ -242,7 +242,7 @@ app.post("/perfil", upload.single('file'), authenticateToken, async (req,res) =>
         console.log(error_update_perfiles);
         return res.status(500).send('Error posting data: '+ error_update_perfiles.error);
     }
-    res.send("Perfil actualizado correctamente.");
+    res.json({message: "Perfil actualizado correctamente."});
 })
 app.get("/perfil", authenticateToken, async (req,res) => {
     const { data, error } = await supabase
