@@ -225,19 +225,17 @@ app.post("/perfil", upload.single('file'), authenticateToken, async (req,res) =>
     const bucketName = 'fotos_perfil';
     const uniqueFileName = `${uuidv4()}-${foto.originalname}`;
     const publicURL = await uploadFileToSupabase(bucketName, foto.buffer, uniqueFileName, foto.mimetype);
+    console.log(publicURL);
     if (!publicURL) {
         return res.status(500).send('Error uploading file to Supabase.');
     }
     let dict = {};
-    console.log(typeof(body));
+    // console.log((req));
     Object.entries(body).forEach(campo => {
-        if (campo[0] == 'foto'){
-            dict[campo[0]] = publicURL;
-        }
-        else{
-            dict[campo[0]] = campo[1];
-        }
+        console.log(campo);
+        dict[campo[0]] = campo[1];
     });
+    dict["foto"] = publicURL;
     console.log(dict);
     const error_update_perfiles = await updateToSupabase("perfiles", dict, "id_usuario", req.id.id);
     if (error_update_perfiles.error) {

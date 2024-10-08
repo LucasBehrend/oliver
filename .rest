@@ -1,6 +1,6 @@
 POST http://localhost:3000/turnos
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzI4MDAzMjM3LCJleHAiOjE3MjgwMDY4Mzd9.0UUn8P-gxpuWh-_lq1ppn-s-zI2YUBGloQvAcB1h0pg
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImlhdCI6MTcyODI0NTk4OCwiZXhwIjoxNzI4MjQ5NTg4fQ.tX3X7IW6zVatylsRKLcWPC8qJJ8eB6ayo5iV9Q9lvr4
 
 {
     "fecha": "12/11/2024",
@@ -11,21 +11,46 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxN
 
 ###
 GET http://localhost:3000/turnos
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzI4MDAzMjM3LCJleHAiOjE3MjgwMDY4Mzd9.0UUn8P-gxpuWh-_lq1ppn-s-zI2YUBGloQvAcB1h0pg
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImlhdCI6MTcyODI0NTk4OCwiZXhwIjoxNzI4MjQ5NTg4fQ.tX3X7IW6zVatylsRKLcWPC8qJJ8eB6ayo5iV9Q9lvr4
+
 
 ###
 POST http://localhost:3000/signup
 Content-Type: application/json
 
 {
-    "nombre": "LUCAS",
-    "password": "1234"
+    "mail": "123@asdasa",
+    "password": "1234",
+    "nombre":"123",
+    "apellido": "s",
+    "edad": "12"
+
 }
 ###
 POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "nombre": "LUCAS",
+    "nombre": "123@asdasa",
     "password": "1234"
 }
+
+###
+POST http://localhost:3000/perfil
+Content-Type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImlhdCI6MTcyODI0NTk4OCwiZXhwIjoxNzI4MjQ5NTg4fQ.tX3X7IW6zVatylsRKLcWPC8qJJ8eB6ayo5iV9Q9lvr4
+
+{
+    "altura": "125",
+    "instagram": "ddfdfs"
+}
+
+###
+GET http://localhost:3000/fecha_turnos
+###
+GET http://localhost:3000/turnos
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImlhdCI6MTcyODI0NTk4OCwiZXhwIjoxNzI4MjQ5NTg4fQ.tX3X7IW6zVatylsRKLcWPC8qJJ8eB6ayo5iV9Q9lvr4
+
+###
+GET http://localhost:3000/todos_turnos
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImlhdCI6MTcyODI0NTk4OCwiZXhwIjoxNzI4MjQ5NTg4fQ.tX3X7IW6zVatylsRKLcWPC8qJJ8eB6ayo5iV9Q9lvr4
