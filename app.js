@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-// import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import cors from 'cors';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
