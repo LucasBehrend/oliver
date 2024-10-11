@@ -104,7 +104,35 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
         return res.status(500).json({message: 'Error inserting data'});
     }
     res.json({message: "turno creado exitosamente"});
-} )
+})
+app.post("/turnos2", async (req, res) =>{
+    const body = req.body;
+    const fecha = body.fecha;
+    const hora = body.hora;
+    const motivo = body.motivo; 
+    const descripcion = body.descripcion;
+    const nombre = body.nombre;
+    const apellido = body.apellido;
+    const descripcion_personal = body.descripcion_personal;
+    const insert_error = await insertToSupabase("turnos", {
+        fecha: fecha,
+        hora: hora,
+        id_usuario: req.id.id,
+        motivo: motivo,
+        descripcion: descripcion,
+        nombre: nombre,
+        apellido: apellido,
+        descripcion_personal: descripcion_personal,
+        aceptado: false
+    });
+    if (insert_error.error) {
+        console.log("log", insert_error);
+        return res.status(500).json({message: 'Error inserting data'});
+    }
+    res.json({message: "turno creado exitosamente"});
+})
+
+
 app.get("/turnos", authenticateToken, async (req,res) =>{
     const { data, error } = await supabase
         .from('turnos')
