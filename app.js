@@ -117,7 +117,6 @@ app.post("/turnos2", async (req, res) =>{
     const insert_error = await insertToSupabase("turnos", {
         fecha: fecha,
         hora: hora,
-        id_usuario: req.id.id,
         motivo: motivo,
         descripcion: descripcion,
         nombre: nombre,
