@@ -114,6 +114,7 @@ app.post("/turnos2", async (req, res) =>{
     const nombre = body.nombre;
     const apellido = body.apellido;
     const descripcion_personal = body.descripcion_personal;
+    const mail = body.mail;
     const insert_error = await insertToSupabase("turnos", {
         fecha: fecha,
         hora: hora,
@@ -121,6 +122,7 @@ app.post("/turnos2", async (req, res) =>{
         descripcion: descripcion,
         nombre: nombre,
         apellido: apellido,
+        mail: mail,
         descripcion_personal: descripcion_personal,
         aceptado: false
     });
