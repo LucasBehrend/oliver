@@ -147,7 +147,7 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
     const { data, error } = await supabase
         .from('usuarios')
         .select('usuario')
-        .eq(id, req.id.id);
+        .eq("id", req.id.id);
     if (error) {
         console.error('Error fetching data:', error.message);
         return res.status(500).send('Error fetching data');
