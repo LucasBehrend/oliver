@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 import cors from 'cors';
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
-
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 const supabaseUrl = 'https://rujclvrxksqnijyqcwgz.supabase.co';
@@ -24,11 +24,52 @@ const port = 3000;
 
 app.use(express.json());
 
+
+// Configuración del transporte
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // puedes usar otros servicios como Outlook, Yahoo, etc.
+  auth: {
+    user: 'agendaoliber@gmail.com',  // tu email
+    pass: process.env.CONTRA_MAIL        // tu contraseña o una app password
+  }
+});
+
 const upload = multer({ 
     storage: multer.memoryStorage(), // Usando memoryStorage para almacenar archivos en la memoria temporalmente
     limits: { fileSize: 100 * 1024 * 1024},
     json: true
 });
+function sendEmail (toEmail, fecha, hora, motivo, tipo) {
+    let subject;
+    let text;
+    if (tipo === "confirmacion"){
+        subject = `Turno con Oliber el ${fecha} a la(s) ${hora}.`;
+        text = `Agendaste un turno con el motivo ${motivo} para el ${fecha} a la(s) ${hora}. Falta esperar a que oliver lo confirme`;
+    }
+    else if (tipo === "rechazado"){
+        subject = `Oliber rechazó tu turno el ${fecha} a la(s) ${hora}.`;
+        text = `Oh no! Oliber rechazó tu turno con motivo ${motivo} para el ${fecha} a la(s) ${hora}. La proxima será!`;
+    }
+    else if (tipo === "aceptado"){
+        subject = `Oliber aceptó tu turno el ${fecha} a la(s) ${hora}.`;
+        text = `Felicitaciones! Oliber aceptó tu turno con motivo ${motivo} para el ${fecha} a la(s) ${hora}. Que lo disfrutes!`;
+    }
+    const mailOptions = {
+      from: 'agendaoliber@gmail.com',
+      to: toEmail,         // email del usuario que ingresó
+      subject: subject,    // asunto del correo
+      text: text
+    };
+  
+    // Envío del correo
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log('Error al enviar el correo:', error);
+      } else {
+        console.log('Correo enviado: ' + info.response);
+      }
+    });
+};
 async function authenticateToken (req, res, next) {
     //Bearer token
     console.log("sasa");
@@ -103,6 +144,15 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
         console.log("log", insert_error);
         return res.status(500).json({message: 'Error inserting data'});
     }
+    const { data, error } = await supabase
+        .from('usuarios')
+        .select('usuario')
+        .eq(id, req.id.id);
+    if (error) {
+        console.error('Error fetching data:', error.message);
+        return res.status(500).send('Error fetching data');
+    }
+    sendEmail(data[0], fecha, hora, motivo);
     res.json({message: "turno creado exitosamente"});
 })
 app.post("/turnos2", async (req, res) =>{
@@ -130,6 +180,7 @@ app.post("/turnos2", async (req, res) =>{
         console.log("log", insert_error);
         return res.status(500).json({message: 'Error inserting data'});
     }
+    sendEmail(mail, fecha, hora, motivo);
     res.json({message: "turno creado exitosamente"});
 })
 
