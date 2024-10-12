@@ -27,24 +27,28 @@ app.use(express.json());
 
 // Configuración del transporte
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // puedes usar otros servicios como Outlook, Yahoo, etc.
+  service: 'gmail',
+//   host: 'smtp.gmail.com',  // Cambia de 'service' a 'host'
+//   port: 465,  // o 587 si no usas SSL
+//   secure: true,  // true para usar SSL  // puedes usar otros servicios como Outlook, Yahoo, etc.
   auth: {
     user: 'agendaoliber@gmail.com',  // tu email
     pass: process.env.CONTRA_MAIL        // tu contraseña o una app password
   }
 });
-
+console.log("paso");
 const upload = multer({ 
     storage: multer.memoryStorage(), // Usando memoryStorage para almacenar archivos en la memoria temporalmente
     limits: { fileSize: 100 * 1024 * 1024},
     json: true
 });
-function sendEmail (toEmail, fecha, hora, motivo, tipo) {
+
+async function sendEmail (toEmail, fecha, hora, motivo, tipo) {
     let subject;
     let text;
     if (tipo === "confirmacion"){
         subject = `Turno con Oliber el ${fecha} a la(s) ${hora}.`;
-        text = `Agendaste un turno con el motivo ${motivo} para el ${fecha} a la(s) ${hora}. Falta esperar a que oliver lo confirme`;
+        text = `Agendaste un turno con el motivo ${motivo} para el ${fecha} a la(s) ${hora}. Falta esperar a que oliver lo confirme.`;
     }
     else if (tipo === "rechazado"){
         subject = `Oliber rechazó tu turno el ${fecha} a la(s) ${hora}.`;
@@ -62,7 +66,7 @@ function sendEmail (toEmail, fecha, hora, motivo, tipo) {
     };
   
     // Envío del correo
-    transporter.sendMail(mailOptions, (error, info) => {
+    await transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log('Error al enviar el correo:', error);
       } else {
@@ -138,7 +142,7 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
         id_usuario: req.id.id,
         motivo: motivo,
         descripcion: descripcion,
-        aceptado: false
+        aceptado: "pendiente"
     });
     if (insert_error.error) {
         console.log("log", insert_error);
@@ -152,10 +156,11 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
         console.error('Error fetching data:', error.message);
         return res.status(500).send('Error fetching data');
     }
-    sendEmail(data[0], fecha, hora, motivo);
+    sendEmail(data[0], fecha, hora, motivo, "confirmacion");
     res.json({message: "turno creado exitosamente"});
 })
 app.post("/turnos2", async (req, res) =>{
+    console.log("hjfdsjdfs");
     const body = req.body;
     const fecha = body.fecha;
     const hora = body.hora;
@@ -174,13 +179,13 @@ app.post("/turnos2", async (req, res) =>{
         apellido: apellido,
         mail: mail,
         descripcion_personal: descripcion_personal,
-        aceptado: false
+        estado: "pendiente"
     });
     if (insert_error.error) {
         console.log("log", insert_error);
         return res.status(500).json({message: 'Error inserting data'});
     }
-    sendEmail(mail, fecha, hora, motivo);
+    sendEmail(mail, fecha, hora, motivo, "confirmacion");
     res.json({message: "turno creado exitosamente"});
 })
 
@@ -200,7 +205,8 @@ app.get("/turnos", authenticateToken, async (req,res) =>{
 app.get("/fecha_turnos", async (req,res) => {
     const { data, error } = await supabase
         .from('turnos')
-        .select("fecha, hora");
+        .select("fecha, hora")
+        .eq("estado", "confirmado");
     if (error) {
         console.error('Error fetching data:', error.message);
         return res.status(500).send('Error fetching data');
@@ -208,7 +214,8 @@ app.get("/fecha_turnos", async (req,res) => {
     res.json({"data": data});
         
 })
-app.get("/todos_turnos", async (req,res) => {
+app.get("/todos_turnos", authenticateToken, async (req,res) => {
+    // if (req.id.id != (idoliver)){return solo oliver puede ver esto}
     const { data, error } = await supabase
         .from('turnos')
         .select();
