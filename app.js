@@ -345,6 +345,16 @@ app.get("/perfil", authenticateToken, async (req,res) => {
 
     res.send(data[0]);
 })
+app.post("/estado_turno", authenticateToken, async (req,res) => {
+    const estado = req.body.estado;
+    const id = req.body.id;
+    const error_update_turnos = await updateToSupabase("turnos", {"estado": estado}, "id", id);
+    if (error_update_turnos.error) {
+        console.log(error_update_turnos);
+        return res.status(500).send('Error posting data: '+ error_update_turnos.error);
+    }
+    res.json({message: "Turno actualizado correctamente."});
+})
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}/`);
 });
