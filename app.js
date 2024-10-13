@@ -136,6 +136,14 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
     const hora = body.hora;
     const motivo = body.motivo;
     const descripcion = body.descripcion;
+    const { data1, error1 } = await supabase
+        .from('perfil')
+        .select('nombre, apellido, descripcion')
+        .eq("id", req.id.id);
+if (error1) {
+    console.error('Error fetching data:', error1.message);
+    return res.status(500).send('Error fetching data');
+}
     const insert_error = await insertToSupabase("turnos", {
         fecha: fecha,
         hora: hora,
