@@ -142,7 +142,7 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
         id_usuario: req.id.id,
         motivo: motivo,
         descripcion: descripcion,
-        aceptado: "pendiente"
+        estado: "pendiente"
     });
     if (insert_error.error) {
         console.log("log", insert_error);
