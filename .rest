@@ -1,12 +1,13 @@
 POST http://localhost:3000/turnos
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImlhdCI6MTcyODI0NTk4OCwiZXhwIjoxNzI4MjQ5NTg4fQ.tX3X7IW6zVatylsRKLcWPC8qJJ8eB6ayo5iV9Q9lvr4
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjcsImlhdCI6MTcyODg1Mzk0MiwiZXhwIjoxNzI5MTEzMTQyfQ.amZdq15F52OnuoRij3niRYSgKpkvMV6d20XIJQgWXOo
 
 {
     "fecha": "12/11/2024",
     "hora":  "12:00:00",
     "motivo": "xdsasdasddas",
     "descripcion": "ghghfghf"
+
 } 
 
 ###
@@ -31,7 +32,7 @@ POST http://localhost:3000/login
 Content-Type: application/json
 
 {
-    "nombre": "123@asdasa",
+    "nombre": "lucasbehrend2006@gmail.com",
     "password": "1234"
 }
 

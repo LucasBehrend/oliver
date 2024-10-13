@@ -164,7 +164,8 @@ if (error1) {
         console.error('Error fetching data:', error.message);
         return res.status(500).send('Error fetching data');
     }
-    sendEmail(data[0], fecha, hora, motivo, "confirmacion");
+    console.log(data);
+    sendEmail(data[0].usuario, fecha, hora, motivo, "confirmacion");
     res.json({message: "turno creado exitosamente"});
 })
 app.post("/turnos2", async (req, res) =>{
