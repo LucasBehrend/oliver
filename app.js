@@ -231,7 +231,11 @@ app.get("/fecha_turnos", async (req,res) => {
         
 })
 app.get("/todos_turnos", authenticateToken, async (req,res) => {
-    // if (req.id.id != (idoliver)){return solo oliver puede ver esto}
+    if (req.id.id != (30))
+        {
+            return res.json({message: "unauthorized"});
+
+        }
     const { data, error } = await supabase
         .from('turnos')
         .select();

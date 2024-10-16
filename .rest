@@ -1,6 +1,6 @@
 POST http://localhost:3000/turnos
 Content-Type: application/json
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjcsImlhdCI6MTcyODg1Mzk0MiwiZXhwIjoxNzI5MTEzMTQyfQ.amZdq15F52OnuoRij3niRYSgKpkvMV6d20XIJQgWXOo
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjcsImlhdCI6MTcyOTEwNTE2OSwiZXhwIjoxNzI5MzY0MzY5fQ.KwYMIXd0QB3swCeR_Sd0p-PCoFA9YAoIGSMeEMK7pR4
 
 {
     "fecha": "12/11/2024",
@@ -54,4 +54,4 @@ authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImlhdCI6M
 
 ###
 GET http://localhost:3000/todos_turnos
-authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjQsImlhdCI6MTcyODc5NTM1NywiZXhwIjoxNzI5MDU0NTU3fQ.fn7jDxmlF25dQI9JKhDRd6Fy2hePpE0erCD_KCtAwzA
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjcsImlhdCI6MTcyOTEwNTE2OSwiZXhwIjoxNzI5MzY0MzY5fQ.KwYMIXd0QB3swCeR_Sd0p-PCoFA9YAoIGSMeEMK7pR4
