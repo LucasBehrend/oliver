@@ -136,36 +136,42 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
     const hora = body.hora;
     const motivo = body.motivo;
     const descripcion = body.descripcion;
-    const { data1, error1 } = await supabase
-        .from('perfil')
-        .select('nombre, apellido, descripcion')
-        .eq("id", req.id.id);
-if (error1) {
+    let { data, error } = await supabase
+        .from("perfiles")
+        .select()
+        .eq("id_usuario", req.id.id);
+if (error) {
     console.error('Error fetching data:', error1.message);
     return res.status(500).send('Error fetching data');
 }
+console.log(data);
+console.log(error);
+console.log(req.id.id);
     const insert_error = await insertToSupabase("turnos", {
         fecha: fecha,
         hora: hora,
         id_usuario: req.id.id,
         motivo: motivo,
         descripcion: descripcion,
+        nombre: data[0].nombre,
+        apellido: data[0].apellido,
+        descripcion_personal: data[0].descripcion_personal,
         estado: "pendiente"
     });
     if (insert_error.error) {
         console.log("log", insert_error);
         return res.status(500).json({message: 'Error inserting data'});
     }
-    const { data, error } = await supabase
+    const { data: dataUsuarios, error: errorUsuarios }  = await supabase
         .from('usuarios')
         .select('usuario')
         .eq("id", req.id.id);
-    if (error) {
+    if (errorUsuarios) {
         console.error('Error fetching data:', error.message);
         return res.status(500).send('Error fetching data');
     }
-    console.log(data);
-    sendEmail(data[0].usuario, fecha, hora, motivo, "confirmacion");
+    console.log(dataUsuarios);
+    sendEmail(dataUsuarios[0].usuario, fecha, hora, motivo, "confirmacion");
     res.json({message: "turno creado exitosamente"});
 })
 app.post("/turnos2", async (req, res) =>{
@@ -179,6 +185,7 @@ app.post("/turnos2", async (req, res) =>{
     const apellido = body.apellido;
     const descripcion_personal = body.descripcion_personal;
     const mail = body.mail;
+
     const insert_error = await insertToSupabase("turnos", {
         fecha: fecha,
         hora: hora,
