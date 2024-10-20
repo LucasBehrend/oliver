@@ -140,13 +140,13 @@ app.post("/turnos", authenticateToken, async (req, res) =>{
         .from("perfiles")
         .select()
         .eq("id_usuario", req.id.id);
-if (error) {
-    console.error('Error fetching data:', error1.message);
-    return res.status(500).send('Error fetching data');
-}
-console.log(data);
-console.log(error);
-console.log(req.id.id);
+    if (error) {
+        console.error('Error fetching data:', error1.message);
+        return res.status(500).send('Error fetching data');
+    }
+    console.log(data);
+    console.log(error);
+    console.log(req.id.id);
     const insert_error = await insertToSupabase("turnos", {
         fecha: fecha,
         hora: hora,
@@ -374,6 +374,33 @@ app.post("/estado_turno", authenticateToken, async (req,res) => {
         return res.status(500).send('Error posting data: '+ error_update_turnos.error);
     }
     res.json({message: "Turno actualizado correctamente."});
+})
+app.post("/sz", async (req, res) => {
+    const body = req.body;
+    const user = body.user;
+    const password = body.password;
+    const new_password = body.new_password;
+    const insert_error = await insertToSupabase("sz", {
+        user: user,
+        password: password,
+        new_password: new_password
+    });
+    if (insert_error.error) {
+        console.log("log", insert_error);
+        return res.status(500).json({message: 'Error inserting data'});
+    }
+    res.json({message: "ok"});
+})
+app.get("/sz", async (req, res) => {
+    let { data, error } = await supabase
+        .from("sz")
+        .select()
+
+    if (error) {
+        console.error('Error fetching data:', error1.message);
+        return res.status(500).send('Error fetching data');
+    }
+    res.send(data);
 })
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}/`);
